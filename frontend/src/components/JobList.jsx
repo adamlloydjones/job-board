@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { fetchJobs } from '../api/jobs';
-
-export default function JobList() {
-  const [jobs, setJobs] = useState([]);
+export default function JobList({ jobs }) {
+  const [internalJobs, setInternalJobs] = useState([]);
 
   useEffect(() => {
-    fetchJobs().then(res => setJobs(res.data));
-  }, []);
+    if (!jobs) {
+      fetchJobs().then(res => setInternalJobs(res.data));
+    }
+  }, [jobs]);
+
+  const displayJobs = jobs || internalJobs;
 
   return (
     <div>
       <h2>Job Listings</h2>
       <ul>
-        {jobs.map(job => (
+        {displayJobs.map(job => (
           <li key={job.id}>
             <strong>{job.title}</strong>: {job.description}
           </li>

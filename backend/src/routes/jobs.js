@@ -21,5 +21,27 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Search jobs by title or description
+router.get('/search', async (req, res) => {
+  const { q } = req.query;
+  try {
+    const result = await es.search({
+      index: 'jobs',
+      body: {
+        query: {
+          multi_match: {
+            query: q,
+            fields: ['title', 'description'],
+            fuzziness: 'AUTO'
+          }
+        }
+      }
+    });
+    const hits = result.hits.hits.map(hit => hit._source);
+    res.json(hits);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
