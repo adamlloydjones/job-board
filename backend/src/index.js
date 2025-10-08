@@ -10,3 +10,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
 });
+
+const candidatesRouter = require('./routes/candidates');
+app.use('/candidates', candidatesRouter);
